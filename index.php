@@ -33,8 +33,8 @@ if ($err) {
   //get the account domain ONLY if using custom subdomain
   $listings = json_decode($response, true);
 
-  foreach($listings as $key => $value) {
-  $link = $value[fullDetailsURL];
+  foreach($listings as $k => $l) {
+  $link = $l[fullDetailsURL];
   $titelProtocol = explode("/", $link);
   $titleRoot = explode(".", $link);
   $titleExtention = explode("/", $titleRoot[2]);
@@ -57,31 +57,34 @@ if ($err) {
 
 //create listings from API call
 foreach ($listings as $key => $value) {
-  echo '<listing>
-          <home_listing_id>'.$value[listingID].'</home_listing_id>
-          <name>'.$value[address].'</name>
-          <availability>for_sale</availability>
-          <description>'.$value[remarksConcat].'</description>
-          <address format="simple">
-              <component name="addr1">'.$value[streetNumber].' '.$value[streetDirection].' '.$value[streetName].'</component>
-              <component name="city">'.$value[cityName].'</component>
-              <component name="region">'.$value[state].'</component>
-              <component name="country">United States</component>
-              <component name="postal_code">'.$value[zipcode].'</component>
-          </address>
-          <latitude>'.$value[latitude].'</latitude>
-          <longitude>'.$value[longitude].'</longitude>
-          <image>
-              <url>'.$value[image][0].'</url>
-          </image>
-          <listing_type>for_sale_by_agent</listing_type>
-          <num_baths>'.$value[totalBaths].'</num_baths>
-          <num_beds>'.$value[bedrooms].'</num_beds>
-          <num_units>1</num_units>
-          <price>'.$value[price].'</price>
-          <property_type>'.$value[idxPropType].'</property_type>
-          <url>'.$value[fullDetailsURL].'</url>
-      </listing>';
+
+  if($value[idxPropType] = 'Single Family' || $value[address] !== ''){
+    echo '<listing>
+            <home_listing_id>'.$value[listingID].'</home_listing_id>
+            <name>'.$value[address].'</name>
+            <availability>for_sale</availability>
+            <description>'.addslashes(htmlentities($value[remarksConcat])).'</description>
+            <address format="simple">
+                <component name="addr1">'.$value[streetNumber].' '.$value[streetDirection].' '.$value[streetName].'</component>
+                <component name="city">'.$value[cityName].'</component>
+                <component name="region">'.$value[state].'</component>
+                <component name="country">United States</component>
+                <component name="postal_code">'.$value[zipcode].'</component>
+            </address>
+            <latitude>'.$value[latitude].'</latitude>
+            <longitude>'.$value[longitude].'</longitude>
+            <image>
+                <url>'.$value[image][0][url].'</url>
+            </image>
+            <listing_type>for_sale_by_agent</listing_type>
+            <num_baths>'.$value[totalBaths].'</num_baths>
+            <num_beds>'.$value[bedrooms].'</num_beds>
+            <num_units>1</num_units>
+            <price>'.$value[price].' USD</price>
+            <property_type>house</property_type>
+            <url>'.$value[fullDetailsURL].'</url>
+        </listing>';
+    }
 }
 
   echo '</listings>';
